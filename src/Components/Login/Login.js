@@ -37,7 +37,6 @@ function Login(props) {
         if (isValid) {
             fetch('https://safe-garden-70688.herokuapp.com/login/validateUsers', {
                     method: 'POST',
-                    mode: 'no-cors',
                     headers: {
                         'Content-Type': 'application/json'
                     },
