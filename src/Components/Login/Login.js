@@ -4,7 +4,6 @@ import { useHistory } from "react-router-dom";
 import Container from '../Common/Container/Container';
 import { AppContext } from '../../App.js'
 import { useFormValidation } from '../Common/Hooks/useFormValidation';
-import axios from 'axios';
 
 function Login(props) {
     const appContext=useContext(AppContext);
@@ -36,18 +35,6 @@ function Login(props) {
         event.preventDefault();
         const isValid=isFormValid();
         if (isValid) {
-            // axios.post(`http://localhost:5000/login/validateUsers`, {
-            //         mode: 'cors',
-            //         body: {
-            //             username: values.userName,
-            //             password: values.password
-            //         }
-            //     })
-            //     .then(res => {
-            //         console.log(res);
-            //         console.log(res.data);
-            //     })
-
             fetch('https://safe-garden-70688.herokuapp.com/login/validateUsers', {
                     method: 'POST',
                     mode: 'no-cors',
