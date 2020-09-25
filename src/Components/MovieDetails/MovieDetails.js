@@ -16,7 +16,7 @@ function MovieDetails() {
         fetch('http://localhost:4000/movieDetails')
             .then(resp => resp.json())
             .then((result)=> {
-                console.log(result.bookingInfo.theaters);
+                // console.log(result.bookingInfo.theaters);
                 setTheaterList(result.bookingInfo.theaters)
             },
             (error) => {
@@ -36,7 +36,7 @@ function MovieDetails() {
         fetch('http://localhost:4000/bookingDetails')
             .then(resp => resp.json())
             .then((result)=> {
-                console.log(result);
+                // console.log(result);
                 setBookingDetails(result)
             },
             (error) => {

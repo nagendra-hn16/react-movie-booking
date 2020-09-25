@@ -8,7 +8,7 @@ import { AppContext } from '../../App.js'
 
 function MoviesList(props) {
     const appContext = useContext(AppContext);
-    console.log(appContext)
+    // console.log(appContext)
     const [sortedBy, setSortedBy] = useState('Default');
     const moviesList = props.moviesList;
     const [language, setLanguage] = useState('');
