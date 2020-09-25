@@ -1,0 +1,18 @@
+.summary_container {
+    width: 450px;
+}
+
+.summary_details_label {
+    margin-bottom: 30px;;
+}
+
+.summary_row span {
+    display: inline-block;
+    width: 130px;
+}
+
+.summary_actions {
+    display: flex;
+    justify-content: space-evenly;
+    margin: 30px 0 20px;
+}

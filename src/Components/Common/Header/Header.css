@@ -1,0 +1,21 @@
+.global_header {
+    padding: 0 20px;
+    height: 55px;
+    background-color: #EEE;
+}
+
+.global_header,
+.global_header_actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.header_actions_locations {
+    display: flex;
+}
+
+.global_header_button {
+    line-height: 1!important;
+    margin: 0 10px!important;
+}

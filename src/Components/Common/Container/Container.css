@@ -1,0 +1,15 @@
+.container {
+    border: 1px solid cornflowerblue;
+    margin: 50px auto;
+}
+
+.header {
+    background-color: cornflowerblue;
+    color: white;
+    padding: 20px;
+    text-align: left;
+}
+
+.content {
+    padding: 20px;
+}

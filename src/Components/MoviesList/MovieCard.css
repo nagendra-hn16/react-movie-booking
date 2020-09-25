@@ -1,0 +1,19 @@
+.moviecard {
+    border: 1px solid gray;
+    margin: 0 10px;
+    padding: 10px 10px 20px;
+    text-align: center;
+    min-width: 200px;
+    width: fit-content;
+    line-height: 2;
+}
+
+.moviecard_image {
+    background-color: skyblue;
+    height: 300px;
+}
+
+.moviecard_button {
+    text-transform: inherit!important;
+    font-size: 17px!important;
+}

@@ -1,0 +1,45 @@
+.details {
+    margin: 0 auto;
+    max-width: fit-content;
+    display: flex;
+}
+
+.bookingdetails_container,
+.moviedetails_container {
+    width: 350px;
+}
+
+.moviedetails_container {
+    min-height: 450px;
+    margin-right: 40px;
+}
+
+.moviedetails_content,
+.bookingdetails_list,
+.bookingdetails_content {
+    padding: 30px 20px;
+}
+
+.bookingdetails_content input {
+    width: 100%;
+}
+
+.bookingdetails_content select {
+    width: 100%;
+}
+
+.details_row {
+    margin-bottom: 10px;
+    line-height: 1.5;
+}
+
+.theater_option {
+    padding: 0!important;
+}
+
+.moviedetails_image {
+    height: 230px;
+    background-color: aqua;
+    width: 160px;
+    margin: 0 auto 20px;
+}

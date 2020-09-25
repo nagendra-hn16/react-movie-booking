@@ -1,0 +1,26 @@
+.login_container {
+    width: 400px;
+    text-align: center;
+}
+
+.login_form {
+    margin: 30px 20px;
+}
+
+.login_username,
+.login_password, 
+.login_submit {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 0;
+}
+
+.login_submit {
+    justify-content: space-around;
+}
+
+.login_submit input {
+    background-color: cornflowerblue;
+    color: white;
+    padding: 5px 20px;
+}

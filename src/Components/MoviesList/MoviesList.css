@@ -1,0 +1,27 @@
+.movieslist_container {
+    width: 980px;
+    font-size: 17px;
+    min-height: 675px;
+}
+
+.movieslist_filters {
+    display: flex;
+    padding: 30px 20px;
+    justify-content: space-evenly;
+    align-items: center;
+}
+
+.movieslist_cards_container {
+    display: block;
+    width: 100%;
+    overflow-x: auto;
+    margin-bottom: 30px;
+}
+
+.movieslist_cards {
+    display: flex;
+}
+
+.movieslist_filters_search {
+    display: flex;
+}

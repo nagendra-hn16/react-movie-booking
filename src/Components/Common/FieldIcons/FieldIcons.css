@@ -1,0 +1,21 @@
+.fieldicon {
+    border: 1px solid gray;
+    align-items: center;
+    display: flex;
+    padding: 5px;
+    background-color: #DEE;
+}
+
+.icon_before {
+    border-right: transparent;
+    border-radius: 5px 0 0 5px;
+}
+
+.icon_after {
+    border-left: transparent;
+    border-radius: 0 5px 5px 0;
+}
+
+.fieldicon_font {
+    font-size: 17px!important;
+}

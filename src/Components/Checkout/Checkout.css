@@ -1,0 +1,11 @@
+.checkout_container {
+    width: 450px;
+}
+
+.checkout_moretickets .MuiButton-text {
+    padding: 0;
+}
+
+.checkout_instruction {
+    margin: 35px 0;
+}
