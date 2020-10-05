@@ -83,15 +83,17 @@ function MovieDetails() {
                 {appContext.selectedTheater  === ''
                     ? <div className="bookingdetails_list">
                         <h3>Select Your Theater:</h3>
-                        {theaterList.length > 0 && theaterList.map(theater =>
-                            <div>
-                                <Button
-                                    className="theater_option"
-                                    color="primary"
-                                    onClick={(ev) => setSelectedTheater(ev)}>
-                                    {theater.theaterName}
-                                </Button>
-                            </div>)}
+                        {theaterList.length > 0 
+                            ? theaterList.map(theater =>
+                                <div>
+                                    <Button
+                                        className="theater_option"
+                                        color="primary"
+                                        onClick={(ev) => setSelectedTheater(ev)}>
+                                        {theater.theaterName}
+                                    </Button>
+                                </div>)
+                            : <div>  No Theaters for selected movie in DB. Please select Movie1 </div>}
                     </div>
                     : <div className="bookingdetails_content">
                         <div className="details_row">
