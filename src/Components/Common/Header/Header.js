@@ -12,15 +12,15 @@ function Header(props) {
     const [error, setError] = useState('')
 
     useEffect(() => {
-        fetch('http://localhost:4000/locations')
+        fetch('http://localhost:5000/locations')
         .then(response => response.json())
         .then(result => {
                 setIsLoaded(true);
-                setLocations(result);
+                setLocations(result[0].locations);
             },
             error => {
                 setIsLoaded(false);
-                setError(error);
+                setError(error.toString());
             }
         )
     }, [])

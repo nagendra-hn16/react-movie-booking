@@ -14,7 +14,10 @@ function Rating(props) {
     }
     return (
         <div className="rating">
-            {ratingsArr.map(rating => rating === 1 ? <StarIcon/> : <StarBorderIcon/> )}
+            {ratingsArr.map((rating, index) => 
+                rating === 1 
+                    ? <StarIcon key={`staricon-${index}`}/> 
+                    : <StarBorderIcon key={`starbordericon-${index}`}/> )}
         </div>
     )
 }

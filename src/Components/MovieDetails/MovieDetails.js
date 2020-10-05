@@ -1,48 +1,62 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useContext } from 'react'
 import {  useHistory } from 'react-router-dom';
 import './MovieDetails.css'
 import { Button } from '@material-ui/core';
 import Container from '../Common/Container/Container';
+import { AppContext } from '../../App';
 
 function MovieDetails() {
     const history = useHistory();
-    const urlParams = new URLSearchParams(history.location.search);
-    const [selectedTheater, setSelectedTheater] = useState('');
+    const appContext = useContext(AppContext);
+    const language = appContext.language;
+    const name = appContext.movieName || 'Movie1';
+    const location = appContext.location || 'Bangalore';
+    const screenType = appContext.screenType;
+    // const [selectedTheater, setSelectedTheater] = useState('');
     const [theaterList, setTheaterList] = useState([]);
     const [bookingDetails, setBookingDetails] = useState({})
     const [proceedToSummary, setProceedToSummary] = useState(false);
+    console.log(appContext.selectedTheater);
+    // Populate the booking details based on the selected theater
+    const setSelectedTheater = (ev) => {
+        // console.log(ev.target.innerText);
+        for(const theater of theaterList) {
+            if(theater.theaterName === ev.target.innerText) {
+                setBookingDetails(theater);
+                break;
+            }
+        }
+        return appContext.selectedTheaterDispatch({
+            type: "SET_SELECTED_THEATER",
+            theaterName: ev.target.innerText
+        })
+    }
 
+    // Get a list of theaters that show the selected movie in the city selected
     useEffect(() => {
-        fetch('http://localhost:4000/movieDetails')
+        fetch(`http://localhost:5000/login/theatersList?name=${name}&city=${location}`)
             .then(resp => resp.json())
             .then((result)=> {
-                // console.log(result.bookingInfo.theaters);
-                setTheaterList(result.bookingInfo.theaters)
+                console.log(result);
+                setTheaterList(result)
             },
             (error) => {
                 console.log(error);
             })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
     useEffect(() => {
         //make post ajax call here
         if(proceedToSummary) {
+            appContext.priceDispatch({
+                type: "SET_PRICE",
+                price: ((parseInt(bookingDetails.ticketPrice) || 200) * parseInt(appContext.noOfSeats))
+            })
             history.push('./summary')
         }
     // eslint-disable-next-line
     }, [proceedToSummary])
-
-    useEffect(() => {
-        fetch('http://localhost:4000/bookingDetails')
-            .then(resp => resp.json())
-            .then((result)=> {
-                // console.log(result);
-                setBookingDetails(result)
-            },
-            (error) => {
-                console.log(error);
-            })
-    }, [selectedTheater])
 
     return (
         <div className="details">
@@ -52,13 +66,13 @@ function MovieDetails() {
                 <div className="moviedetails_content">
                     <div className="moviedetails_image"></div>
                     <div className="moviedetails_name details_row">
-                    Movie Name: {urlParams.get('name')}
+                        Movie Name: {name}
                     </div>
                     <div className="moviedetails_language details_row">
-                        Language: {urlParams.get('language')}
+                        Language: {language}
                     </div>
                     <div className="moviedetails_screentype">
-                        Format: {urlParams.get('format')}
+                        Format: {screenType}
                     </div>
                 </div>
             </Container>
@@ -66,7 +80,7 @@ function MovieDetails() {
             <Container
                 name="bookingdetails"
                 headerText="Booking Details">
-                {selectedTheater  === ''
+                {appContext.selectedTheater  === ''
                     ? <div className="bookingdetails_list">
                         <h3>Select Your Theater:</h3>
                         {theaterList.length > 0 && theaterList.map(theater =>
@@ -74,34 +88,51 @@ function MovieDetails() {
                                 <Button
                                     className="theater_option"
                                     color="primary"
-                                    onClick={(ev) => setSelectedTheater(ev.target.innerText)}>
-                                    {theater}
+                                    onClick={(ev) => setSelectedTheater(ev)}>
+                                    {theater.theaterName}
                                 </Button>
                             </div>)}
                     </div>
                     : <div className="bookingdetails_content">
                         <div className="details_row">
-                            <h3>Theater Selected: {bookingDetails.selectedTheater}</h3>
+                            <h3>Theater Selected: {appContext.selectedTheater}</h3>
                         </div>
                         <div className="bookingdetails_date details_row">
                             <label htmlFor="bookingDetailsDate">Date:</label>
-                            <select id="bookingDetailsDate">
-                                {bookingDetails && bookingDetails.dates && bookingDetails.dates.map((date) =>
-                                    <option>{date}</option>
+                            <select
+                                id="bookingDetailsDate"
+                                onChange={(ev) => appContext.showDateDispatch({
+                                    type: "SET_SHOW_DATE",
+                                    showDate: ev.target.value
+                                })}>
+                                <option>Select Show Date</option>
+                                {bookingDetails && bookingDetails.showDates && bookingDetails.showDates.map((date) =>
+                                    <option value={date}>{date}</option>
                                 )}
                             </select>
                         </div>
                         <div className="bookingdetails_time details_row">
                             <label htmlFor="bookingDetailsTime">Show Time:</label>
-                            <select id="bookingDetailsTime">
-                                {bookingDetails && bookingDetails.timings && bookingDetails.timings.map((timing) =>
-                                    <option>{timing}</option>
+                            <select id="bookingDetailsTime"
+                                onChange={(ev) => appContext.showTimeDispatch({
+                                    type: "SET_SHOW_TIME",
+                                    showTime: ev.target.value
+                                })}>
+                                <option>Select Show Time</option>
+                                {bookingDetails && bookingDetails.showTimes && bookingDetails.showTimes.map((showTime) =>
+                                    <option value={showTime}>{showTime}</option>
                                 )}
                             </select>
                         </div>
                         <div className="bookingdetails_seats details_row">
                             <label htmlFor="bookingDetailsSeats">Number of Seats:</label>
-                            <input type="text" id="bookingDetailsSeats" />
+                            <input 
+                                type="text" 
+                                id="bookingDetailsSeats" 
+                                onChange={(ev) => appContext.noOfSeatsDispatch({
+                                    type: "SET_NO_OF_SEATS",
+                                    noOfSeats: ev.target.value
+                                })}/>
                         </div>
                         <Button
                             variant="contained" 

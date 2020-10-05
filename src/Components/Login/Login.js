@@ -1,21 +1,21 @@
 import React, { useState, useContext } from 'react'
 import './Login.css'
-import { useHistory } from "react-router-dom";
+// import { useHistory } from "react-router-dom";
 import Container from '../Common/Container/Container';
 import { AppContext } from '../../App.js'
 import { useFormValidation } from '../Common/Hooks/useFormValidation';
 
 function Login(props) {
-    const appContext=useContext(AppContext);
-    const [invalid, setInvalid]=useState(false)
-    const history=useHistory();
+    const appContext = useContext(AppContext);
+    const [invalid, setInvalid] = useState(false)
+    // const history = useHistory();
 
     const {
         values,
         errorMsgs,
         bind,
         isFormValid
-    }=useFormValidation({
+    } = useFormValidation({
         userName: {
             required: 'Please enter your User Name',
             pattern: {
@@ -33,9 +33,9 @@ function Login(props) {
 
     const handleSubmit=(event) => {
         event.preventDefault();
-        const isValid=isFormValid();
+        const isValid = isFormValid();
         if (isValid) {
-            fetch('https://safe-garden-70688.herokuapp.com/login/validateUsers', {
+            fetch('http://localhost:5000/login/validateUsers', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -50,14 +50,16 @@ function Login(props) {
                     (result) => {
                         console.log('result', result);
                         if (result.msg === 'valid user') {
+                            console.log('result2', result.msg);
                             appContext.isLoggedInDispatch({
                                 type: 'LOGIN'
                             });
+                            console.log('result3', result.msg);
                             appContext.userNameDispatch({
                                 type: 'SET_USERNAME',
                                 userName: values.userName
                             });
-                            history.push('/list')
+                            console.log('result4', result.msg);
                         } else {
                             setInvalid(true);
                         }
@@ -67,7 +69,6 @@ function Login(props) {
                     }
                 )
         }
-
     }
 
     return (<div className="login">

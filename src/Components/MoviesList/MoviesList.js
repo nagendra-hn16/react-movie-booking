@@ -8,29 +8,26 @@ import { AppContext } from '../../App.js'
 
 function MoviesList(props) {
     const appContext = useContext(AppContext);
-    // console.log(appContext)
-    const [sortedBy, setSortedBy] = useState('Default');
+    const [sortedBy, setSortedBy] = useState('');
     const moviesList = props.moviesList;
     const [language, setLanguage] = useState('');
     const [searchText, setSearchText] = useState('')
 
-    // useEffect(() => {
-    //     fetch(`http://localhost:4000/moviesList/${appContext.location}/Default`)
-    //     .then(resp => resp.json())
-    //     .then((result) => {
-    //         setMoviesList(result.Movies);
-    //     },
-    //     (error) => {
-    //         console.log(error);
-    //     })
-    // // eslint-disable-next-line react-hooks/exhaustive-deps
-    // }, [appContext.location])
-
     useEffect(() => {
-        fetch(`http://localhost:4000/moviesList`)
+        fetch('http://localhost:5000/login/moviesList',
+            {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    "location": appContext.location,
+                    "sortBy": sortedBy
+                })
+            })
         .then(resp => resp.json())
         .then((result) => {
-            props.setMoviesList(result[appContext.location][sortedBy].Movies);
+            props.setMoviesList(result);
         },
         (error) => {
             console.log(error);
@@ -49,7 +46,7 @@ function MoviesList(props) {
                                 id="sortbyFilters"
                                 onChange={(event) => setSortedBy(event.target.value)}>
                                 <option value="Default"> Select </option>
-                                <option value="popularity"> Popularity </option>
+                                <option value="rating"> Popularity </option>
                                 <option value="screenType"> Screen Type </option>
                             </select>
                         </div>
@@ -75,13 +72,12 @@ function MoviesList(props) {
                     </div>
                     <div className="movieslist_cards_container">
                         <div className="movieslist_cards">
-                            {moviesList && moviesList.length > 0 && moviesList.map((movie) => {
+                            {moviesList && moviesList.length > 0 && moviesList.map((movie, index) => {
                                     return (language === '' || language === movie.language)
                                     && (searchText === '' || movie.name.indexOf(searchText) !== -1)
-                                        ? <MovieCard
+                                        ? <MovieCard key={`movie-${index}`}
                                             movie={movie} />
                                         : ''
-                                    // return movie.name
                                 }
                             )}
                         </div>
