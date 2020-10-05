@@ -1,6 +1,6 @@
 import React, { useState, useContext } from 'react'
 import './Login.css'
-// import { useHistory } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import Container from '../Common/Container/Container';
 import { AppContext } from '../../App.js'
 import { useFormValidation } from '../Common/Hooks/useFormValidation';
@@ -8,7 +8,7 @@ import { useFormValidation } from '../Common/Hooks/useFormValidation';
 function Login(props) {
     const appContext = useContext(AppContext);
     const [invalid, setInvalid] = useState(false)
-    // const history = useHistory();
+    const history = useHistory();
 
     const {
         values,
@@ -59,6 +59,7 @@ function Login(props) {
                                 type: 'SET_USERNAME',
                                 userName: values.userName
                             });
+                            history.push('/list');
                             console.log('result4', result.msg);
                         } else {
                             setInvalid(true);
