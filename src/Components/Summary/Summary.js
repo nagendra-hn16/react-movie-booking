@@ -25,7 +25,7 @@ function Summary() {
     }
 
     const goForward =() => {
-        fetch('http://localhost:5000/login/confirmBooking',
+        fetch('https://safe-garden-70688.herokuapp.com/login/confirmBooking',
             {
                 method: 'POST',
                 'Content-Type': 'application/json',

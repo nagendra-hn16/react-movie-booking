@@ -34,7 +34,7 @@ function MovieDetails() {
 
     // Get a list of theaters that show the selected movie in the city selected
     useEffect(() => {
-        fetch(`http://localhost:5000/login/theatersList?name=${name}&city=${location}`)
+        fetch(`https://safe-garden-70688.herokuapp.com/login/theatersList?name=${name}&city=${location}`)
             .then(resp => resp.json())
             .then((result)=> {
                 console.log(result);

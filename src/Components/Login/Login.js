@@ -35,7 +35,7 @@ function Login(props) {
         event.preventDefault();
         const isValid = isFormValid();
         if (isValid) {
-            fetch('http://localhost:5000/login/validateUsers', {
+            fetch('https://safe-garden-70688.herokuapp.com/login/validateUsers', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
