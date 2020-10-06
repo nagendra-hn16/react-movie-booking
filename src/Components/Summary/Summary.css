@@ -16,3 +16,7 @@
     justify-content: space-evenly;
     margin: 30px 0 20px;
 }
+
+.summary_error {
+    color: red;
+}

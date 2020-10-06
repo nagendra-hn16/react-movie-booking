@@ -7,6 +7,7 @@ import { AppContext } from '../../App';
 
 function Summary() {
     const appContext = useContext(AppContext);
+    let  errorOnPage  = false;
     // const [summaryDetails, setSummaryDetails] = useState({})
     const history = useHistory();
     // useEffect(() => {
@@ -24,11 +25,13 @@ function Summary() {
         history.push(`/details`)
     }
 
-    const goForward =() => {
-        fetch('https://safe-garden-70688.herokuapp.com/login/confirmBooking',
+    const goForward = async () =>  {
+        const resp  = await fetch('https://safe-garden-70688.herokuapp.com/login/confirmBooking',
             {
                 method: 'POST',
-                'Content-Type': 'application/json',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
                 body: JSON.stringify({
                     "movieName": appContext.movieName,
                     "selectedTheater": appContext.selectedTheater,
@@ -39,15 +42,24 @@ function Summary() {
                     "showTime": appContext.showTime,
                     "userName": appContext.userName
                 })
-            })
-        history.push(`/checkout`)
+            });
+        if(resp.msg === "booking confirmed!") {
+            history.push(`/checkout`)
+        } else  {
+            errorOnPage = true;
+        }
+        
     }
     return (
         <div className="summary">
             <Container
                 name="summary"
                 headerText="Booking Summary">
-
+                {errorOnPage
+                    ? <div className="summary_error">
+                        There was some issue with  your booking. Please try later.
+                    </div>
+                    : ''}
                 {appContext.noOfSeats
                     ? <div className="summary_details">
                         <div className="summary_details_label">

@@ -59,7 +59,7 @@ function Login(props) {
                                 type: 'SET_USERNAME',
                                 userName: values.userName
                             });
-                            history.push('/list');
+                            // history.push('/list');
                             console.log('result4', result.msg);
                         } else {
                             setInvalid(true);
