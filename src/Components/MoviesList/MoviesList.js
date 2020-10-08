@@ -18,7 +18,8 @@ function MoviesList(props) {
             {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    'autorization': `bearer ${sessionStorage.getItem('token')}`
                 },
                 body: JSON.stringify({
                     "location": appContext.location,

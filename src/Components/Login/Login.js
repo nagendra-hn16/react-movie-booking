@@ -48,19 +48,20 @@ function Login(props) {
                 .then(res => res.json())
                 .then(
                     (result) => {
-                        console.log('result', result);
+                        // console.log('result', result);
                         if (result.msg === 'valid user') {
-                            console.log('result2', result.msg);
+                            sessionStorage.setItem('userToken', result.token)
+                            console.log('token', result.token);
                             appContext.isLoggedInDispatch({
                                 type: 'LOGIN'
                             });
-                            console.log('result3', result.msg);
+                            // console.log('result3', result.msg);
                             appContext.userNameDispatch({
                                 type: 'SET_USERNAME',
                                 userName: values.userName
                             });
                             history.push('/list');
-                            console.log('result4', result.msg);
+                            // console.log('result4', result.msg);
                         } else {
                             setInvalid(true);
                         }
