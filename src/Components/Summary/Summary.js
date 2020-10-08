@@ -31,7 +31,7 @@ function Summary() {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'autorization': `bearer ${sessionStorage.getItem('token')}`
+                    'autorization': `bearer ${sessionStorage.getItem('userToken')}`
                 },
                 body: JSON.stringify({
                     "movieName": appContext.movieName,

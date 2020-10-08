@@ -38,7 +38,7 @@ function MovieDetails() {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
-                    'autorization': `bearer ${sessionStorage.getItem('token')}`
+                    'autorization': `bearer ${sessionStorage.getItem('userToken')}`
                 }
             })
             .then(resp => resp.json())
