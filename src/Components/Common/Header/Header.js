@@ -12,7 +12,13 @@ function Header(props) {
     const [error, setError] = useState('')
 
     useEffect(() => {
-        fetch('https://safe-garden-70688.herokuapp.com/locations')
+        fetch('https://safe-garden-70688.herokuapp.com/locations',
+            {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
         .then(response => response.json())
         .then(result => {
                 setIsLoaded(true);
