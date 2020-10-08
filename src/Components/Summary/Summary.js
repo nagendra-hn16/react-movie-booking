@@ -26,7 +26,7 @@ function Summary() {
     }
 
     const goForward = async () =>  {
-        const resp  = await fetch('https://safe-garden-70688.herokuapp.com/login/confirmBooking',
+        const resp  = await fetch('https://safe-garden-70688.herokuapp.com/movies/confirmBooking',
             {
                 method: 'POST',
                 headers: {

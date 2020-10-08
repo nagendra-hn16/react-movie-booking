@@ -12,7 +12,6 @@ function MovieDetails() {
     const name = appContext.movieName || 'Movie1';
     const location = appContext.location || 'Bangalore';
     const screenType = appContext.screenType;
-    // const [selectedTheater, setSelectedTheater] = useState('');
     const [theaterList, setTheaterList] = useState([]);
     const [bookingDetails, setBookingDetails] = useState({})
     const [proceedToSummary, setProceedToSummary] = useState(false);
@@ -34,11 +33,11 @@ function MovieDetails() {
 
     // Get a list of theaters that show the selected movie in the city selected
     useEffect(() => {
-        fetch(`https://safe-garden-70688.herokuapp.com/login/theatersList?name=${name}&city=${location}`)
+        fetch(`https://safe-garden-70688.herokuapp.com/movies/theatersList?name=${name}&city=${location}`)
             .then(resp => resp.json())
-            .then((result)=> {
-                console.log(result);
-                setTheaterList(result)
+            .then((res)=> {
+                console.log(res.userInfo);
+                setTheaterList(res.result);
             },
             (error) => {
                 console.log(error);
