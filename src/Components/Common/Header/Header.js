@@ -36,7 +36,7 @@ function Header(props) {
                 Infy Movies
             </div>
             <div>
-                {appContext.isLoggedIn
+                {appContext.userName
                     ? <div className="global_header_actions">
                         <p>Welcome {appContext.userName}</p>
                         <Button 

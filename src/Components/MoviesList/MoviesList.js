@@ -28,7 +28,11 @@ function MoviesList(props) {
             })
         .then(resp => resp.json())
         .then((res) => {
-            console.log(res.userInfo);
+            console.log(res.payload.userInfo);
+            appContext.userNameDispatch({
+                type: 'SET_USERNAME',
+                userName: res.payload.userInfo.userName
+            });
             props.setMoviesList(res.result);
         },
         (error) => {
