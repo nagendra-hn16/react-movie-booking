@@ -14,7 +14,7 @@ function MoviesList(props) {
     const [searchText, setSearchText] = useState('')
 
     useEffect(() => {
-        fetch('https://safe-garden-70688.herokuapp.com/movies/moviesList',
+        fetch('https://safe-garden-70688.herokuapp.com/login/moviesList',
             {
                 method: 'POST',
                 headers: {
