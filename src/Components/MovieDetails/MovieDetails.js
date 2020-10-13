@@ -8,43 +8,55 @@ import { AppContext } from '../../App';
 function MovieDetails() {
     const history = useHistory();
     const appContext = useContext(AppContext);
-    const language = appContext.language;
-    const name = appContext.movieName || 'Movie1';
-    const location = appContext.location || 'Bangalore';
-    const screenType = appContext.screenType;
+    const [movieDetails, setMovieDetails] = useState({});
     const [theaterList, setTheaterList] = useState([]);
+    const [selectedTheater, setSelectedTheater] = useState('');
     const [bookingDetails, setBookingDetails] = useState({})
+    const [showDate, setShowDate] = useState('')
+    const [showTime, setShowTime] = useState('')
+    const [seats, setSeats] = useState('')
+
     const [proceedToSummary, setProceedToSummary] = useState(false);
-    console.log(appContext.selectedTheater);
+    
     // Populate the booking details based on the selected theater
-    const setSelectedTheater = (ev) => {
-        // console.log(ev.target.innerText);
+    const setTheaterDetails = (ev) => {
+        // console.log(theaterList);
         for(const theater of theaterList) {
-            if(theater.theaterName === ev.target.innerText) {
+            if(theater.theaterName === ev.target.value) {
                 setBookingDetails(theater);
                 break;
             }
         }
-        return appContext.selectedTheaterDispatch({
-            type: "SET_SELECTED_THEATER",
-            theaterName: ev.target.innerText
-        })
+        setSelectedTheater(ev.target.value);
     }
 
     // Get a list of theaters that show the selected movie in the city selected
     useEffect(() => {
-        fetch(`https://safe-garden-70688.herokuapp.com/login/theatersList?name=${name}&city=${location}`,
+        fetch(`https://safe-garden-70688.herokuapp.com/movie/movieDetails`,
             {
                 method: 'GET',
+                credentials: "include",
                 headers: {
-                    'Content-Type': 'application/json',
-                    'autorization': `bearer ${sessionStorage.getItem('userToken')}`
+                    'Content-Type': 'application/json'
                 }
             })
             .then(resp => resp.json())
             .then((res)=> {
-                console.log(res.userInfo);
-                setTheaterList(res.result);
+                // console.log(res);
+                appContext.userNameDispatch({
+                    type: 'SET_USERNAME',
+                    userName: res.header.userName
+                });
+                appContext.locationsDispatch({
+                    type: 'SET_LOCATIONS',
+                    locations: res.header.locations || appContext.locations
+                });
+                appContext.locationDispatch({
+                    type: 'SET_LOCATION',
+                    location: res.header.selectedLocation
+                });
+                setTheaterList(res.theatersList);
+                setMovieDetails(res.selectedMovieDetails)
             },
             (error) => {
                 console.log(error);
@@ -55,11 +67,29 @@ function MovieDetails() {
     useEffect(() => {
         //make post ajax call here
         if(proceedToSummary) {
-            appContext.priceDispatch({
-                type: "SET_PRICE",
-                price: ((parseInt(bookingDetails.ticketPrice) || 200) * parseInt(appContext.noOfSeats))
+            fetch(`https://safe-garden-70688.herokuapp.com/movie/selectShow`,
+            {
+                method: 'POST',
+                credentials: "include",
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    showDate,
+                    showTime,
+                    seats,
+                    selectedTheater,
+                    price: ((parseInt(bookingDetails.ticketPrice) || 200) * parseInt(seats))
+                })
+            }).then(res => res.json())
+            .then(result => {
+                // console.log(result.msg, result.msg === "show selected");
+                if(result.msg === "show selected") {
+                    history.push('/summary');
+                }
+            }, error => {
+                console.log(error);
             })
-            history.push('./summary')
         }
     // eslint-disable-next-line
     }, [proceedToSummary])
@@ -72,13 +102,13 @@ function MovieDetails() {
                 <div className="moviedetails_content">
                     <div className="moviedetails_image"></div>
                     <div className="moviedetails_name details_row">
-                        Movie Name: {name}
+                        Movie Name: {movieDetails.movieName}
                     </div>
                     <div className="moviedetails_language details_row">
-                        Language: {language}
+                        Language: {movieDetails.language}
                     </div>
                     <div className="moviedetails_screentype">
-                        Format: {screenType}
+                        Format: {movieDetails.screenType}
                     </div>
                 </div>
             </Container>
@@ -86,49 +116,60 @@ function MovieDetails() {
             <Container
                 name="bookingdetails"
                 headerText="Booking Details">
-                {appContext.selectedTheater  === ''
+                {selectedTheater === ''
                     ? <div className="bookingdetails_list">
                         <h3>Select Your Theater:</h3>
                         {theaterList.length > 0 
-                            ? theaterList.map(theater =>
-                                <div>
-                                    <Button
+                            ? theaterList.map((theater, index) =>
+                                <div key={`theater${index}`}>
+                                    <input
+                                        type="radio"
+                                        name="theaterName"
+                                        id={`theater${index}`}
                                         className="theater_option"
-                                        color="primary"
-                                        onClick={(ev) => setSelectedTheater(ev)}>
+                                        value={theater.theaterName}
+                                        onChange={(ev) => setTheaterDetails(ev)}>
+                                    </input>
+                                    <label htmlFor={`theater${index}`}>
                                         {theater.theaterName}
-                                    </Button>
+                                    </label>
                                 </div>)
                             : <div>  No Theaters for selected movie in DB. Please select Movie1 </div>}
                     </div>
                     : <div className="bookingdetails_content">
                         <div className="details_row">
-                            <h3>Theater Selected: {appContext.selectedTheater}</h3>
+                            <h3>Theater Selected: {selectedTheater}</h3>
                         </div>
                         <div className="bookingdetails_date details_row">
                             <label htmlFor="bookingDetailsDate">Date:</label>
                             <select
                                 id="bookingDetailsDate"
-                                onChange={(ev) => appContext.showDateDispatch({
-                                    type: "SET_SHOW_DATE",
-                                    showDate: ev.target.value
-                                })}>
+                                onChange={(ev) => setShowDate(ev.target.value)}
+                                value={showDate}>
                                 <option>Select Show Date</option>
-                                {bookingDetails && bookingDetails.showDates && bookingDetails.showDates.map((date) =>
-                                    <option value={date}>{date}</option>
+                                {bookingDetails && bookingDetails.showDates 
+                                    && bookingDetails.showDates.map((date, index) =>
+                                    <option 
+                                        value={date}
+                                        key={`date${index}`}>
+                                        {date}
+                                    </option>
                                 )}
                             </select>
                         </div>
                         <div className="bookingdetails_time details_row">
                             <label htmlFor="bookingDetailsTime">Show Time:</label>
                             <select id="bookingDetailsTime"
-                                onChange={(ev) => appContext.showTimeDispatch({
-                                    type: "SET_SHOW_TIME",
-                                    showTime: ev.target.value
-                                })}>
+                                onChange={(ev) => setShowTime(ev.target.value)}
+                                value={showTime}>
                                 <option>Select Show Time</option>
-                                {bookingDetails && bookingDetails.showTimes && bookingDetails.showTimes.map((showTime) =>
-                                    <option value={showTime}>{showTime}</option>
+                                {bookingDetails && bookingDetails.showTimes 
+                                    && bookingDetails.showTimes.map((showTime, index) =>
+                                    <option 
+                                        value={showTime}
+                                        key={`time${index}`}>
+                                        {showTime}
+                                    </option>
                                 )}
                             </select>
                         </div>
@@ -137,10 +178,8 @@ function MovieDetails() {
                             <input 
                                 type="text" 
                                 id="bookingDetailsSeats" 
-                                onChange={(ev) => appContext.noOfSeatsDispatch({
-                                    type: "SET_NO_OF_SEATS",
-                                    noOfSeats: ev.target.value
-                                })}/>
+                                value={seats}
+                                onChange={(ev) => setSeats(ev.target.value)}/>
                         </div>
                         <Button
                             variant="contained" 

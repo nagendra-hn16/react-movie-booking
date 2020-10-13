@@ -6,38 +6,47 @@ import SearchIcon from '@material-ui/icons/Search';
 import Container from '../Common/Container/Container';
 import { AppContext } from '../../App.js'
 
-function MoviesList(props) {
+function MoviesList() {
     const appContext = useContext(AppContext);
     const [sortedBy, setSortedBy] = useState('');
-    const moviesList = props.moviesList;
     const [language, setLanguage] = useState('');
-    const [searchText, setSearchText] = useState('')
+    const [searchText, setSearchText] = useState('');
+    const [moviesList, setMoviesList] = useState([]);
 
     useEffect(() => {
-        fetch('https://safe-garden-70688.herokuapp.com/login/moviesList',
-            {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'autorization': `bearer ${sessionStorage.getItem('userToken')}`
-                },
-                body: JSON.stringify({
-                    "location": appContext.location,
-                    "sortBy": sortedBy
+        if(appContext.location) {
+            fetch('https://safe-garden-70688.herokuapp.com/movie/moviesList',
+                {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    credentials: "include",
+                    body: JSON.stringify({
+                        "location": appContext.location,
+                        "sortBy": sortedBy
+                    })
                 })
+            .then(resp => resp.json())
+            .then((res) => {
+                appContext.userNameDispatch({
+                    type: 'SET_USERNAME',
+                    userName: res.header.userName
+                });
+                appContext.locationsDispatch({
+                    type: 'SET_LOCATIONS',
+                    locations: res.header.locations || appContext.locations
+                });
+                appContext.locationDispatch({
+                    type: 'SET_LOCATION',
+                    location: res.header.selectedLocation
+                });
+                setMoviesList(res.moviesList);
+            },
+            (error) => {
+                console.log(error);
             })
-        .then(resp => resp.json())
-        .then((res) => {
-            console.log(res.payload.userInfo);
-            appContext.userNameDispatch({
-                type: 'SET_USERNAME',
-                userName: res.payload.userInfo.userName
-            });
-            props.setMoviesList(res.result);
-        },
-        (error) => {
-            console.log(error);
-        })
+        }
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [sortedBy, appContext.location])
     return (

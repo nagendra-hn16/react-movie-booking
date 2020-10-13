@@ -5,7 +5,7 @@ import Container from '../Common/Container/Container';
 import { AppContext } from '../../App.js'
 import { useFormValidation } from '../Common/Hooks/useFormValidation';
 
-function Login(props) {
+function Login() {
     const appContext = useContext(AppContext);
     const [invalid, setInvalid] = useState(false)
     const history = useHistory();
@@ -40,6 +40,7 @@ function Login(props) {
                     headers: {
                         'Content-Type': 'application/json'
                     },
+                    credentials: "include",
                     body: JSON.stringify({
                         "username": values.userName,
                         "password": values.password
@@ -50,18 +51,14 @@ function Login(props) {
                     (result) => {
                         // console.log('result', result);
                         if (result.msg === 'valid user') {
-                            sessionStorage.setItem('userToken', result.token)
-                            console.log('token', result.token);
                             appContext.isLoggedInDispatch({
                                 type: 'LOGIN'
                             });
-                            // console.log('result3', result.msg);
                             appContext.userNameDispatch({
                                 type: 'SET_USERNAME',
                                 userName: values.userName
                             });
                             history.push('/list');
-                            // console.log('result4', result.msg);
                         } else {
                             setInvalid(true);
                         }

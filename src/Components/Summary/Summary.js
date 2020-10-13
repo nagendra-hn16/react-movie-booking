@@ -1,4 +1,4 @@
-import React, { useContext } from 'react'
+import React, { useEffect, useContext, useState } from 'react'
 import Container from '../Common/Container/Container'
 import './Summary.css'
 import { Button } from '@material-ui/core'
@@ -8,48 +8,62 @@ import { AppContext } from '../../App';
 function Summary() {
     const appContext = useContext(AppContext);
     let  errorOnPage  = false;
-    // const [summaryDetails, setSummaryDetails] = useState({})
+    const [summaryDetails, setSummaryDetails] = useState({})
     const history = useHistory();
-    // useEffect(() => {
-    //     fetch('http://localhost:4000/bookingSummary')
-    //         .then(resp => resp.json())
-    //         .then(result => {
-    //             setSummaryDetails(result);
-    //         },
-    //         error => {
-    //             console.log(error);
-    //         })
-    // }, [])
+    useEffect(() => {
+        fetch('https://safe-garden-70688.herokuapp.com/movie/bookingSummary',
+            {
+                method: 'GET',
+                credentials: "include",
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(resp => resp.json())
+            .then(res => {
+                setSummaryDetails(res.bookingSummary);
+                // console.log(res);
+                appContext.userNameDispatch({
+                    type: 'SET_USERNAME',
+                    userName: res.header.userName
+                });
+                appContext.locationsDispatch({
+                    type: 'SET_LOCATIONS',
+                    locations: res.header.locations || appContext.locations
+                });
+                appContext.locationDispatch({
+                    type: 'SET_LOCATION',
+                    location: res.header.selectedLocation
+                });
+            },
+            error => {
+                console.log(error);
+            })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [])
 
     const goBack =() => {
         history.push(`/details`)
     }
 
-    const goForward = async () =>  {
-        const resp  = await fetch('https://safe-garden-70688.herokuapp.com/login/confirmBooking',
+    const goForward = () =>  {
+        fetch('https://safe-garden-70688.herokuapp.com/movie/confirmBooking',
             {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json',
-                    'autorization': `bearer ${sessionStorage.getItem('userToken')}`
+                    'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({
-                    "movieName": appContext.movieName,
-                    "selectedTheater": appContext.selectedTheater,
-                    "location": appContext.location,
-                    "noOfSeats": appContext.noOfSeats,
-                    "price": appContext.price,
-                    "showDate": appContext.showDate,
-                    "showTime": appContext.showTime,
-                    "userName": appContext.userName
-                })
-            });
-        if(resp.msg === "booking confirmed!") {
-            history.push(`/checkout`)
-        } else  {
-            errorOnPage = true;
-        }
-        
+                credentials: "include"
+            }).then(resp => resp.json())
+            .then(res => {
+                console.log(res)
+                console.log(res.msg)
+                if(res.msg === "booking confirmed!") {
+                    history.push(`/checkout`)
+                }
+            }, error => {
+                errorOnPage = true;
+            })
     }
     return (
         <div className="summary">
@@ -61,38 +75,38 @@ function Summary() {
                         There was some issue with  your booking. Please try later.
                     </div>
                     : ''}
-                {appContext.noOfSeats
+                {summaryDetails.seats
                     ? <div className="summary_details">
                         <div className="summary_details_label">
                             You have selected the following details
                         </div>
                         <div className="summary_row">
                             <span>Theater Name</span>
-                            : {appContext.selectedTheater}
+                            : {summaryDetails.selectedTheater}
                         </div>
                         <div className="summary_row">
                             <span>Location</span>
-                            : {appContext.location}
+                            : {summaryDetails.selectedLocation}
                         </div>
                         <div className="summary_row">
                             <span>Seats Booked</span>
-                            : {appContext.noOfSeats}
+                            : {summaryDetails.seats}
                         </div>
                         <div className="summary_row">
                             <span>Movie Name</span>
-                            : {appContext.movieName}
+                            : {summaryDetails.movieName}
                         </div>
                         <div className="summary_row">
                             <span>Price</span>
-                            : {appContext.price}
+                            : {summaryDetails.price}
                         </div>
                         <div className="summary_row">
                             <span>Show Date</span>
-                            : {appContext.showDate}
+                            : {summaryDetails.showDate}
                         </div>
                         <div className="summary_row">
                             <span>Show Timing</span>
-                            : {appContext.showTime}
+                            : {summaryDetails.showTime}
                         </div>
                         
                         <div className="summary_actions">
